@@ -47,6 +47,15 @@ export default function RegisterPage() {
   });
 
   const handleRegister = async (values: typeof form.values) => {
+    if (!supabase) {
+      notifications.show({
+        title: "Configuration Error",
+        message: "Supabase is not configured. Please contact support.",
+        color: "red",
+      });
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -81,6 +90,15 @@ export default function RegisterPage() {
   };
 
   const handleGoogleRegister = async () => {
+    if (!supabase) {
+      notifications.show({
+        title: "Configuration Error",
+        message: "Supabase is not configured. Please contact support.",
+        color: "red",
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       const { error } = await supabase.auth.signInWithOAuth({

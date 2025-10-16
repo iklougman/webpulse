@@ -17,6 +17,11 @@ export function Layout({ children }: LayoutProps) {
   const router = useRouter();
 
   useEffect(() => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {

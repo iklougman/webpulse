@@ -41,6 +41,15 @@ export default function LoginPage() {
   });
 
   const handleLogin = async (values: typeof form.values) => {
+    if (!supabase) {
+      notifications.show({
+        title: "Configuration Error",
+        message: "Supabase is not configured. Please contact support.",
+        color: "red",
+      });
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -68,6 +77,15 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = async () => {
+    if (!supabase) {
+      notifications.show({
+        title: "Configuration Error",
+        message: "Supabase is not configured. Please contact support.",
+        color: "red",
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       const { error } = await supabase.auth.signInWithOAuth({

@@ -18,6 +18,11 @@ export function ProtectedLayout({ children }: ProtectedLayoutProps) {
   const pathname = usePathname();
 
   useEffect(() => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
