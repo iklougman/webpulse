@@ -42,11 +42,15 @@ export function ProtectedLayout({ children }: ProtectedLayoutProps) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth state change:", event, session?.user?.email);
       setUser(session?.user ?? null);
       setLoading(false);
 
       if (event === "SIGNED_OUT" || !session) {
         router.push("/auth/login");
+      } else if (event === "SIGNED_IN" && session) {
+        console.log("User signed in, should be on dashboard");
+        // Don't redirect here, let the login page handle it
       }
     });
 

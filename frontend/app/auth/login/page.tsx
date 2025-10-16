@@ -59,8 +59,11 @@ export default function LoginPage() {
       const { data, error } = await supabase.auth.signInWithPassword(values);
       if (error) throw error;
 
+      console.log("Login successful, data:", data);
+
       // Set user in auth store
       if (data.user) {
+        console.log("Setting user in auth store:", data.user.email);
         setUser(data.user);
       }
 
@@ -70,10 +73,9 @@ export default function LoginPage() {
         color: "green",
       });
 
-      // Wait a moment for auth state to update, then redirect
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 500);
+      console.log("Attempting redirect to dashboard...");
+      // Redirect immediately - let ProtectedLayout handle auth state
+      router.push("/dashboard");
     } catch (error: any) {
       setError(error.message);
       notifications.show({
