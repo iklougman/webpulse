@@ -29,15 +29,11 @@ export function ProtectedLayout({ children }: ProtectedLayoutProps) {
       const {
         data: { session },
       } = await supabase.auth.getSession();
-      console.log("Initial session check:", session);
       setUser(session?.user ?? null);
       setLoading(false);
 
       if (!session) {
-        console.log("No session found, redirecting to login");
         router.push("/auth/login");
-      } else {
-        console.log("Session found, user:", session.user);
       }
     };
 
@@ -46,15 +42,11 @@ export function ProtectedLayout({ children }: ProtectedLayoutProps) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth state change:", event, session);
       setUser(session?.user ?? null);
       setLoading(false);
 
       if (event === "SIGNED_OUT" || !session) {
-        console.log("Signing out or no session, redirecting to login");
         router.push("/auth/login");
-      } else if (event === "SIGNED_IN") {
-        console.log("User signed in, staying on current page");
       }
     });
 
