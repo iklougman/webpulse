@@ -19,6 +19,7 @@ export function ProtectedLayout({ children }: ProtectedLayoutProps) {
 
   useEffect(() => {
     if (!supabase) {
+      console.warn('Supabase not configured - skipping auth state management');
       setLoading(false);
       return;
     }

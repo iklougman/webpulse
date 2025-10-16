@@ -1,64 +1,25 @@
-// Development-friendly Supabase client
-let supabaseClient: any = null;
+import { createClient } from '@supabase/supabase-js'
 
-export const getSupabaseClient = () => {
-  // Only create client in browser environment
-  if (typeof window === 'undefined') {
-    return null;
-  }
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co'
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key'
 
-  // Return existing client if already created
-  if (supabaseClient) {
-    return supabaseClient;
-  }
+// Check if we have valid Supabase credentials
+const isSupabaseConfigured = !supabaseUrl.includes('placeholder') && 
+                            supabaseAnonKey !== 'placeholder-key' &&
+                            supabaseUrl.startsWith('https://')
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
+let supabaseClient: any = null
 
-  // Only create client if we have valid credentials
-  if (supabaseUrl.includes('placeholder') || supabaseAnonKey === 'placeholder-key') {
-    console.warn('Supabase not configured. Using development mode.');
-    return null;
-  }
-
+if (isSupabaseConfigured) {
   try {
-    // Dynamic import to avoid SSR issues
-    const { createClient } = require('@supabase/supabase-js');
-    supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
-    return supabaseClient;
+    supabaseClient = createClient(supabaseUrl, supabaseAnonKey)
+    console.log('Supabase client initialized successfully')
   } catch (error) {
-    console.warn('Failed to create Supabase client:', error);
-    return null;
+    console.error('Failed to initialize Supabase client:', error)
+    supabaseClient = null
   }
-};
+} else {
+  console.warn('Supabase not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local')
+}
 
-// For backward compatibility, export a getter that provides helpful messages
-export const supabase = new Proxy({}, {
-  get(target, prop) {
-    const client = getSupabaseClient();
-    if (!client) {
-      // Return mock functions that show helpful messages
-      if (prop === 'auth') {
-        return {
-          getSession: () => Promise.resolve({ data: { session: null }, error: null }),
-          signInWithPassword: () => Promise.resolve({ 
-            data: null, 
-            error: { message: 'Supabase not configured. Please set up your Supabase project and add credentials to .env.local' } 
-          }),
-          signUp: () => Promise.resolve({ 
-            data: null, 
-            error: { message: 'Supabase not configured. Please set up your Supabase project and add credentials to .env.local' } 
-          }),
-          signInWithOAuth: () => Promise.resolve({ 
-            data: null, 
-            error: { message: 'Supabase not configured. Please set up your Supabase project and add credentials to .env.local' } 
-          }),
-          signOut: () => Promise.resolve({ error: null }),
-          onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
-        };
-      }
-      return () => null;
-    }
-    return client[prop];
-  }
-});
+export { supabaseClient as supabase }

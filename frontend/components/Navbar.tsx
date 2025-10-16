@@ -74,9 +74,9 @@ export function Navbar() {
   const handleLogin = async (values: typeof loginForm.values) => {
     if (!supabase) {
       notifications.show({
-        title: "Configuration Error",
-        message: "Supabase is not configured. Please contact support.",
-        color: "red",
+        title: "Supabase Not Configured",
+        message: "Please set up Supabase credentials in .env.local. See SUPABASE_SETUP.md for instructions.",
+        color: "orange",
       });
       return;
     }
@@ -107,9 +107,9 @@ export function Navbar() {
   const handleSignup = async (values: typeof signupForm.values) => {
     if (!supabase) {
       notifications.show({
-        title: "Configuration Error",
-        message: "Supabase is not configured. Please contact support.",
-        color: "red",
+        title: "Supabase Not Configured",
+        message: "Please set up Supabase credentials in .env.local. See SUPABASE_SETUP.md for instructions.",
+        color: "orange",
       });
       return;
     }
