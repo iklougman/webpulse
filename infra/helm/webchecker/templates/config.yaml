@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "webchecker.fullname" . }}-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "webchecker.labels" . | nindent 4 }}
+data:
+  REDIS_URL: {{ .Values.env.REDIS_URL | quote }}
+  BACKEND_URL: "http://{{ include "webchecker.fullname" . }}-backend:8080"
+  LOG_LEVEL: "info"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "webchecker.fullname" . }}-secrets
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "webchecker.labels" . | nindent 4 }}
+type: Opaque
+stringData:
+  SUPABASE_JWT_SECRET: {{ .Values.secrets.SUPABASE_JWT_SECRET | quote }}
+  MAIL_USERNAME: {{ .Values.secrets.MAIL_USERNAME | quote }}
+  MAIL_PASSWORD: {{ .Values.secrets.MAIL_PASSWORD | quote }}
+  DATABASE_URL: {{ .Values.env.DATABASE_URL | quote }}
+  DATABASE_USERNAME: {{ .Values.secrets.DATABASE_USERNAME | quote }}
+  DATABASE_PASSWORD: {{ .Values.secrets.DATABASE_PASSWORD | quote }}

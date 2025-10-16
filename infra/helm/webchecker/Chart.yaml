@@ -1,0 +1,17 @@
+apiVersion: v2
+name: webchecker
+description: Web Checker - Multi-service monitoring platform
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - monitoring
+  - uptime
+  - seo
+  - website-checker
+home: https://github.com/your-org/web-checker
+sources:
+  - https://github.com/your-org/web-checker
+maintainers:
+  - name: Your Name
+    email: your.email@example.com
