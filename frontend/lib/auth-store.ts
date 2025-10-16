@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import { User } from '@supabase/supabase-js'
 
 interface AuthState {
@@ -8,12 +9,17 @@ interface AuthState {
   setLoading: (loading: boolean) => void
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  loading: false,
-  setUser: (user) => {
-    console.log('Auth store: Setting user', user);
-    set({ user });
-  },
-  setLoading: (loading) => set({ loading }),
-}))
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      user: null,
+      loading: true,
+      setUser: (user) => set({ user, loading: false }),
+      setLoading: (loading) => set({ loading }),
+    }),
+    {
+      name: 'auth-store',
+      partialize: (state) => ({ user: state.user }),
+    }
+  )
+)

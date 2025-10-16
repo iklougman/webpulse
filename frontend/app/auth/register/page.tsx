@@ -49,15 +49,7 @@ export default function RegisterPage() {
   });
 
   const handleRegister = async (values: typeof form.values) => {
-    if (!supabase) {
-      notifications.show({
-        title: "Supabase Not Configured",
-        message:
-          "Please set up Supabase credentials in .env.local. See SUPABASE_SETUP.md for instructions.",
-        color: "orange",
-      });
-      return;
-    }
+    if (!supabase) return;
 
     setLoading(true);
     setError(null);
@@ -73,20 +65,16 @@ export default function RegisterPage() {
 
       if (error) throw error;
 
-      // Set user in auth store if signup was successful
       if (data.user) {
         setUser(data.user);
+        notifications.show({
+          title: "Success",
+          message:
+            "Account created successfully! Check your email for verification.",
+          color: "green",
+        });
+        router.push("/dashboard");
       }
-
-      notifications.show({
-        title: "Success",
-        message:
-          "Account created successfully! Check your email for verification.",
-        color: "green",
-      });
-
-      // Redirect to dashboard after successful signup
-      router.push("/dashboard");
     } catch (error: any) {
       setError(error.message);
       notifications.show({
@@ -100,15 +88,7 @@ export default function RegisterPage() {
   };
 
   const handleGoogleRegister = async () => {
-    if (!supabase) {
-      notifications.show({
-        title: "Supabase Not Configured",
-        message:
-          "Please set up Supabase credentials in .env.local. See SUPABASE_SETUP.md for instructions.",
-        color: "orange",
-      });
-      return;
-    }
+    if (!supabase) return;
 
     setLoading(true);
     try {

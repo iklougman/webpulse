@@ -19,50 +19,46 @@ export function ProtectedLayout({ children }: ProtectedLayoutProps) {
 
   useEffect(() => {
     if (!supabase) {
-      console.warn("Supabase not configured - skipping auth state management");
       setLoading(false);
       return;
     }
 
-    // Check initial session
-    const checkInitialSession = async () => {
+    const checkSession = async () => {
       const {
         data: { session },
       } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
       setLoading(false);
 
-      if (!session) {
+      if (!session && !pathname.startsWith("/auth")) {
         router.push("/auth/login");
       }
     };
 
-    checkInitialSession();
+    checkSession();
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth state change:", event, session?.user?.email);
+    } = supabase.auth.onAuthStateChange((event: string, session: any) => {
       setUser(session?.user ?? null);
       setLoading(false);
 
-      if (event === "SIGNED_OUT" || !session) {
+      if (event === "SIGNED_OUT" && !pathname.startsWith("/auth")) {
         router.push("/auth/login");
-      } else if (event === "SIGNED_IN" && session) {
-        console.log("User signed in, should be on dashboard");
-        // Don't redirect here, let the login page handle it
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [setUser, setLoading, router]);
+  }, [setUser, setLoading, router, pathname]);
 
   if (loading) {
     return <LoadingOverlay visible />;
   }
 
   if (!user) {
-    router.push("/auth/login");
+    if (!pathname.startsWith("/auth")) {
+      router.push("/auth/login");
+    }
     return <LoadingOverlay visible />;
   }
 

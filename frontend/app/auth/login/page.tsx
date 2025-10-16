@@ -37,20 +37,11 @@ export default function LoginPage() {
     },
     validate: {
       email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
-      // No password validation for login - let server handle it
     },
   });
 
   const handleLogin = async (values: typeof form.values) => {
-    if (!supabase) {
-      notifications.show({
-        title: "Supabase Not Configured",
-        message:
-          "Please set up Supabase credentials in .env.local. See SUPABASE_SETUP.md for instructions.",
-        color: "orange",
-      });
-      return;
-    }
+    if (!supabase) return;
 
     setLoading(true);
     setError(null);
@@ -59,29 +50,15 @@ export default function LoginPage() {
       const { data, error } = await supabase.auth.signInWithPassword(values);
       if (error) throw error;
 
-      console.log("Login successful, data:", data);
-
-      // Set user in auth store
       if (data.user) {
-        console.log("Setting user in auth store:", data.user.email);
         setUser(data.user);
+        notifications.show({
+          title: "Success",
+          message: "Logged in successfully",
+          color: "green",
+        });
+        router.push("/dashboard");
       }
-
-      notifications.show({
-        title: "Success",
-        message: "Logged in successfully",
-        color: "green",
-      });
-
-      console.log("Attempting redirect to dashboard...");
-      // Try router.push first, then fallback to window.location
-      router.push("/dashboard");
-      
-      // Fallback redirect after a short delay
-      setTimeout(() => {
-        console.log("Fallback redirect using window.location");
-        window.location.href = "/dashboard";
-      }, 1000);
     } catch (error: any) {
       setError(error.message);
       notifications.show({
@@ -95,15 +72,7 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = async () => {
-    if (!supabase) {
-      notifications.show({
-        title: "Supabase Not Configured",
-        message:
-          "Please set up Supabase credentials in .env.local. See SUPABASE_SETUP.md for instructions.",
-        color: "orange",
-      });
-      return;
-    }
+    if (!supabase) return;
 
     setLoading(true);
     try {
