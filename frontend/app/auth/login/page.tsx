@@ -59,8 +59,11 @@ export default function LoginPage() {
       const { data, error } = await supabase.auth.signInWithPassword(values);
       if (error) throw error;
 
+      console.log("Login successful, data:", data);
+
       // Set user in auth store
       if (data.user) {
+        console.log("Setting user in auth store:", data.user);
         setUser(data.user);
       }
 
@@ -70,7 +73,12 @@ export default function LoginPage() {
         color: "green",
       });
 
+      console.log("Attempting redirect to dashboard...");
+      // Try both methods to ensure redirect works
       router.push("/dashboard");
+      setTimeout(() => {
+        window.location.href = "/dashboard";
+      }, 100);
     } catch (error: any) {
       setError(error.message);
       notifications.show({
