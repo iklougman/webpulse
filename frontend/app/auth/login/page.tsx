@@ -45,7 +45,8 @@ export default function LoginPage() {
     if (!supabase) {
       notifications.show({
         title: "Supabase Not Configured",
-        message: "Please set up Supabase credentials in .env.local. See SUPABASE_SETUP.md for instructions.",
+        message:
+          "Please set up Supabase credentials in .env.local. See SUPABASE_SETUP.md for instructions.",
         color: "orange",
       });
       return;
@@ -86,7 +87,8 @@ export default function LoginPage() {
     if (!supabase) {
       notifications.show({
         title: "Supabase Not Configured",
-        message: "Please set up Supabase credentials in .env.local. See SUPABASE_SETUP.md for instructions.",
+        message:
+          "Please set up Supabase credentials in .env.local. See SUPABASE_SETUP.md for instructions.",
         color: "orange",
       });
       return;

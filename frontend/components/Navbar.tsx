@@ -86,12 +86,12 @@ export function Navbar() {
     try {
       const { data, error } = await supabase.auth.signInWithPassword(values);
       if (error) throw error;
-      
+
       // Set user in auth store
       if (data.user) {
         setUser(data.user);
       }
-      
+
       notifications.show({
         title: "Success",
         message: "Logged in successfully",
@@ -126,12 +126,12 @@ export function Navbar() {
     try {
       const { data, error } = await supabase.auth.signUp(values);
       if (error) throw error;
-      
+
       // Set user in auth store
       if (data.user) {
         setUser(data.user);
       }
-      
+
       notifications.show({
         title: "Success",
         message: "Account created successfully",

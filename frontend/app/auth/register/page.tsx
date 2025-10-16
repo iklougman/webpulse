@@ -52,7 +52,8 @@ export default function RegisterPage() {
     if (!supabase) {
       notifications.show({
         title: "Supabase Not Configured",
-        message: "Please set up Supabase credentials in .env.local. See SUPABASE_SETUP.md for instructions.",
+        message:
+          "Please set up Supabase credentials in .env.local. See SUPABASE_SETUP.md for instructions.",
         color: "orange",
       });
       return;
@@ -79,7 +80,8 @@ export default function RegisterPage() {
 
       notifications.show({
         title: "Success",
-        message: "Account created successfully! Check your email for verification.",
+        message:
+          "Account created successfully! Check your email for verification.",
         color: "green",
       });
 
@@ -101,7 +103,8 @@ export default function RegisterPage() {
     if (!supabase) {
       notifications.show({
         title: "Supabase Not Configured",
-        message: "Please set up Supabase credentials in .env.local. See SUPABASE_SETUP.md for instructions.",
+        message:
+          "Please set up Supabase credentials in .env.local. See SUPABASE_SETUP.md for instructions.",
         color: "orange",
       });
       return;

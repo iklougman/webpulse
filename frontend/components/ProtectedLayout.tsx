@@ -24,6 +24,19 @@ export function ProtectedLayout({ children }: ProtectedLayoutProps) {
       return;
     }
 
+    // Check initial session
+    const checkInitialSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user ?? null);
+      setLoading(false);
+      
+      if (!session) {
+        router.push("/auth/login");
+      }
+    };
+
+    checkInitialSession();
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -43,7 +56,8 @@ export function ProtectedLayout({ children }: ProtectedLayoutProps) {
   }
 
   if (!user) {
-    return <>{children}</>;
+    router.push("/auth/login");
+    return <LoadingOverlay visible />;
   }
 
   return (
