@@ -73,6 +73,15 @@ export function Navbar() {
   });
 
   const handleLogin = async (values: typeof loginForm.values) => {
+    if (!supabase) {
+      notifications.show({
+        title: "Configuration Error",
+        message: "Supabase is not configured. Please contact support.",
+        color: "red",
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       const { error } = await supabase.auth.signInWithPassword(values);
@@ -97,6 +106,15 @@ export function Navbar() {
   };
 
   const handleSignup = async (values: typeof signupForm.values) => {
+    if (!supabase) {
+      notifications.show({
+        title: "Configuration Error",
+        message: "Supabase is not configured. Please contact support.",
+        color: "red",
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       const { error } = await supabase.auth.signUp(values);
@@ -120,7 +138,9 @@ export function Navbar() {
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    if (supabase) {
+      await supabase.auth.signOut();
+    }
     router.push("/");
   };
 
