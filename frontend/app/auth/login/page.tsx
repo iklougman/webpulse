@@ -74,8 +74,14 @@ export default function LoginPage() {
       });
 
       console.log("Attempting redirect to dashboard...");
-      // Redirect immediately - let ProtectedLayout handle auth state
+      // Try router.push first, then fallback to window.location
       router.push("/dashboard");
+      
+      // Fallback redirect after a short delay
+      setTimeout(() => {
+        console.log("Fallback redirect using window.location");
+        window.location.href = "/dashboard";
+      }, 1000);
     } catch (error: any) {
       setError(error.message);
       notifications.show({
