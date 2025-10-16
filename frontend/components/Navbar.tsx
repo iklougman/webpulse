@@ -38,7 +38,7 @@ const navItems = [
 
 export function Navbar() {
   const router = useRouter();
-  const { user } = useAuthStore();
+  const { user, setUser } = useAuthStore();
   const [loginOpened, { open: openLogin, close: closeLogin }] =
     useDisclosure(false);
   const [signupOpened, { open: openSignup, close: closeSignup }] =
@@ -75,7 +75,8 @@ export function Navbar() {
     if (!supabase) {
       notifications.show({
         title: "Supabase Not Configured",
-        message: "Please set up Supabase credentials in .env.local. See SUPABASE_SETUP.md for instructions.",
+        message:
+          "Please set up Supabase credentials in .env.local. See SUPABASE_SETUP.md for instructions.",
         color: "orange",
       });
       return;
@@ -83,8 +84,14 @@ export function Navbar() {
 
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword(values);
+      const { data, error } = await supabase.auth.signInWithPassword(values);
       if (error) throw error;
+      
+      // Set user in auth store
+      if (data.user) {
+        setUser(data.user);
+      }
+      
       notifications.show({
         title: "Success",
         message: "Logged in successfully",
@@ -108,7 +115,8 @@ export function Navbar() {
     if (!supabase) {
       notifications.show({
         title: "Supabase Not Configured",
-        message: "Please set up Supabase credentials in .env.local. See SUPABASE_SETUP.md for instructions.",
+        message:
+          "Please set up Supabase credentials in .env.local. See SUPABASE_SETUP.md for instructions.",
         color: "orange",
       });
       return;
@@ -116,15 +124,22 @@ export function Navbar() {
 
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signUp(values);
+      const { data, error } = await supabase.auth.signUp(values);
       if (error) throw error;
+      
+      // Set user in auth store
+      if (data.user) {
+        setUser(data.user);
+      }
+      
       notifications.show({
         title: "Success",
-        message: "Check your email for verification link",
+        message: "Account created successfully",
         color: "green",
       });
       closeSignup();
       signupForm.reset();
+      router.push("/dashboard");
     } catch (error: any) {
       notifications.show({
         title: "Error",

@@ -22,10 +22,12 @@ import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { AlertCircle, ArrowLeft, Check } from "tabler-icons-react";
 import { supabase } from "@/lib/supabase";
+import { useAuthStore } from "@/lib/auth-store";
 import Link from "next/link";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { setUser } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -60,7 +62,7 @@ export default function RegisterPage() {
     setError(null);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: values.email,
         password: values.password,
         options: {
@@ -70,13 +72,19 @@ export default function RegisterPage() {
 
       if (error) throw error;
 
+      // Set user in auth store if signup was successful
+      if (data.user) {
+        setUser(data.user);
+      }
+
       notifications.show({
         title: "Success",
-        message: "Check your email for verification link",
+        message: "Account created successfully! Check your email for verification.",
         color: "green",
       });
 
-      router.push("/auth/login");
+      // Redirect to dashboard after successful signup
+      router.push("/dashboard");
     } catch (error: any) {
       setError(error.message);
       notifications.show({

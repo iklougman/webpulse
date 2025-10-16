@@ -21,10 +21,12 @@ import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { AlertCircle, ArrowLeft } from "tabler-icons-react";
 import { supabase } from "@/lib/supabase";
+import { useAuthStore } from "@/lib/auth-store";
 import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { setUser } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -53,8 +55,13 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword(values);
+      const { data, error } = await supabase.auth.signInWithPassword(values);
       if (error) throw error;
+
+      // Set user in auth store
+      if (data.user) {
+        setUser(data.user);
+      }
 
       notifications.show({
         title: "Success",
