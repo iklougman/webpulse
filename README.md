@@ -47,6 +47,24 @@ make deploy
 helm install webchecker infra/helm/webchecker/
 ```
 
+### Supabase Authentication Setup
+
+The frontend uses Supabase for authentication. To enable login/signup functionality:
+
+1. **Set up Supabase project**: Follow the detailed guide in [SUPABASE_SETUP.md](./SUPABASE_SETUP.md)
+2. **Configure environment variables**: Create `frontend/.env.local` with your Supabase credentials
+3. **Restart dev server**: The authentication will work after proper configuration
+
+**Quick setup**:
+```bash
+# Copy environment template
+cp frontend/env.example frontend/.env.local
+
+# Edit with your Supabase credentials
+# Then restart the frontend
+cd frontend && npm run dev
+```
+
 ## 📁 Project Structure
 
 ```
